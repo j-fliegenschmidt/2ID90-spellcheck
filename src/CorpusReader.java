@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class CorpusReader {
 
@@ -110,5 +111,9 @@ public class CorpusReader {
          * ADD CODE HERE *
          */
         return smoothedCount;
+    }
+    
+    public Stream<String> getVocabularyStream () {
+        return this.vocabulary.stream();
     }
 }
