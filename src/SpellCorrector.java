@@ -1,5 +1,7 @@
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.stream.Stream;
 
 public class SpellCorrector {
 
@@ -25,7 +27,9 @@ public class SpellCorrector {
             if (this.cr.inVocabulary(word)) {
                 finalSuggestion += word + " ";
             } else {
-                HashSet<String> candidates = this.getCandidateWords(word);
+                HashMap<String, Double> candidates = new HashMap<>();
+                this.getCandidateWords(word).forEach(candidate -> 
+                        candidates.put(candidate, calculateChannelModelProbability(candidate, word)));
             }
         }
 
@@ -40,14 +44,9 @@ public class SpellCorrector {
         return 0.0;
     }
 
-    public HashSet<String> getCandidateWords(String word) {
-        HashSet<String> listOfWords = new HashSet<>();
-        
-        this.cr.getVocabularyStream()
-                .filter(entry -> damerauLevenshtein(entry, word) == 1)
-                .forEach(listOfWords::add);
-        
-        return listOfWords;
+    public Stream<String> getCandidateWords(String word) {
+        return this.cr.getVocabularyStream()
+                .filter(entry -> damerauLevenshtein(entry, word) == 1);
     }
     
     private static int damerauLevenshtein(String a, String b) {
