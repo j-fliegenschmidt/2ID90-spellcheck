@@ -45,5 +45,4 @@ public class SpellChecker {
         System.out.println("Answer: " + sc.correctPhrase(sentence));
     }
     
-    //Damerau-Levenshtein distance of at most 1 - implementation
 }

@@ -1,4 +1,6 @@
 
+import static java.lang.Integer.min;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class SpellCorrector {
@@ -51,7 +53,52 @@ public class SpellCorrector {
     }
     
     private static int damerauLevenshtein(String a, String b) {
-        // TODO
-        return 0;
+        
+        int foo[][];
+        int cost;
+        int i;
+        int j;
+        int len1 = a.length();
+        int len2 = b.length();
+        
+        foo = new int[len1][len2];
+        
+        for (i = 0; i < len1; i ++) {
+            foo[i][0] = i;
+        }
+        for (j = 0; j < len2; j ++) {
+            foo[0][j] = j;
+        }
+        
+        for (i = 0; i < len1; i ++) {
+            for (j = 0; j < len2; j ++) {
+                
+                int char1 = a.charAt(i);
+                int char2 = b.charAt(j);
+                
+                if (char1 == char2) {
+                    cost = 0;
+                } else {
+                    cost = 1;
+                }
+                
+                //deletion
+                int w = foo[i-1][j] + 1;
+                //insertion
+                int x = foo[i][j-1] + 1;
+                //substitution
+                int y = foo[i-1][j-1] + cost;
+                
+                foo[i][j] = min(w, min(x,y));
+                
+                if (i > 1 && j > 1 && char1 == b.charAt(j-1) && a.charAt(i-1) == char2) {
+                    int z = foo[i-2][j-2] + cost;
+                    foo[i][j] = min(foo[i][j], z);
+                }
+            }
+        }
+        
+        return foo[len1][len2];
     }
+    
 }
