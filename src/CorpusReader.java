@@ -106,14 +106,84 @@ public class CorpusReader {
         }
 
         double smoothedCount = 0.0;
+        int totalPossibilities = 0;
+        FrequencyTable frequencyTyble = new FrequencyTable();
+        String nGramProposition = NGram.substring(0, NGram.lastIndexOf(" ") + 1);
 
-        /**
-         * ADD CODE HERE *
-         */
+        for (String word : this.vocabulary) {
+            int wordFrequency = this.getNGramCount(nGramProposition + word);
+            totalPossibilities += wordFrequency;
+
+            frequencyTyble.incrementOccurence(wordFrequency);
+        }
+
+        int NGramCount = this.getNGramCount(NGram);
+        if (NGramCount == 0) {
+            smoothedCount = frequencyTyble.getInterpolatedFrequency(1) / totalPossibilities;
+        } else {
+            smoothedCount = ((NGramCount + 1) * frequencyTyble.getInterpolatedFrequency(NGramCount + 1))
+                    / frequencyTyble.getInterpolatedFrequency(NGramCount);
+        }
+
         return smoothedCount;
     }
-    
-    public Stream<String> getVocabularyStream () {
+
+    public Stream<String> getVocabularyStream() {
         return this.vocabulary.stream();
+    }
+    
+    private class FrequencyTable {
+        
+        private int lowestFrequency;
+        private int highestFrequency;
+        private final HashMap<Integer, Integer> frequencies;
+        
+        public FrequencyTable() {
+            this.frequencies = new HashMap<>();
+            this.highestFrequency = this.lowestFrequency = -1;
+        }
+        
+        public void incrementOccurence(int frequency) {
+            if (this.frequencies.containsKey(frequency)) {
+                this.frequencies.put(frequency, this.frequencies.get(frequency));
+            }
+            else {
+                this.frequencies.put(frequency, 1);
+            }
+            
+            this.highestFrequency = this.highestFrequency < frequency ? frequency : this.highestFrequency;
+            this.lowestFrequency = this.lowestFrequency > frequency ? frequency : this.lowestFrequency;
+        }
+        
+        public int getRawFrequency(int frequency) {
+            return this.frequencies.getOrDefault(frequency, 0);
+        }
+        
+        public double getInterpolatedFrequency(int frequency) {
+            int frequencyFrequency = this.getRawFrequency(frequency);
+            if (frequencyFrequency == 0) {
+                if (frequency > this.highestFrequency) {
+                    for (int i = this.highestFrequency; i < frequency; i++) {
+                        frequencyFrequency *= 0.66;
+                    }
+                }
+                else if (frequency < this.lowestFrequency) {
+                    for (int i = frequency; i < this.lowestFrequency; i++) {
+                        frequencyFrequency *= 1.5;
+                    }
+                }
+                else {
+                    int y_diff = this.frequencies.get(this.highestFrequency) 
+                            - this.frequencies.get(this.lowestFrequency);
+                    int x_diff = this.frequencies.get(this.highestFrequency)
+                            - this.frequencies.get(this.lowestFrequency);
+                    
+                    frequencyFrequency = x_diff != 0 ? y_diff / x_diff :
+                            this.frequencies.get(this.highestFrequency);
+                }
+            }
+            
+            return frequencyFrequency;
+        }
     }
 }
