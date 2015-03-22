@@ -57,7 +57,7 @@ public class SpellCorrector {
         int len1 = a.length();
         int len2 = b.length();
         
-        foo = new int[len1][len2];
+        foo = new int[len1 + 1][len2 + 1];
         
         for (i = 0; i < len1; i ++) {
             foo[i][0] = i;
@@ -66,11 +66,11 @@ public class SpellCorrector {
             foo[0][j] = j;
         }
         
-        for (i = 0; i < len1; i ++) {
-            for (j = 0; j < len2; j ++) {
-                
-                int char1 = a.charAt(i);
-                int char2 = b.charAt(j);
+        for (i = 1; i < len1; i ++) {
+            int char1 = a.charAt(i - 1);
+            
+            for (j = 1; j < len2; j ++) {
+                int char2 = b.charAt(j - 1);
                 
                 if (char1 == char2) {
                     cost = 0;
@@ -87,7 +87,7 @@ public class SpellCorrector {
                 
                 foo[i][j] = min(w, min(x,y));
                 
-                if (i > 1 && j > 1 && char1 == b.charAt(j-1) && a.charAt(i-1) == char2) {
+                if (i > 1 && j > 1 && char1 == b.charAt(j-2) && a.charAt(i-2) == char2) {
                     int z = foo[i-2][j-2] + cost;
                     foo[i][j] = min(foo[i][j], z);
                 }
