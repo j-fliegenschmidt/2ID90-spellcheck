@@ -1,5 +1,7 @@
 import java.util.HashMap;
 import static java.lang.Integer.min;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class SpellCorrector {
@@ -43,12 +45,15 @@ public class SpellCorrector {
         return 0.0;
     }
 
+    //Janis, I'm not sure how to implement it if DamerauLevenshtein is in different class
     public Stream<String> getCandidateWords(String word) {
+        //DamerauLevenshtein instance;
+        //instance = new DamerauLevenshtein(entry, word);
         return this.cr.getVocabularyStream()
-                .filter(entry -> damerauLevenshtein(entry, word) == 1);
+                .filter(entry -> damerauLevenshtein(entry, word, 26) == 1);
     }
     
-    public static int damerauLevenshtein(String a, String b) {
+    public static int damerauLevenshtein(String a, String b, int alphabetlength) {
         
         int foo[][];
         int cost;
@@ -56,45 +61,46 @@ public class SpellCorrector {
         int j;
         int len1 = a.length();
         int len2 = b.length();
+        final int combined = len1 + len2;
         
-        foo = new int[len1 + 1][len2 + 1];
+        foo = new int[len1+2][len2+2];
         
-        for (i = 0; i < len1; i ++) {
-            foo[i][0] = i;
+        foo[0][0] = combined;
+        
+        for (i = 0; i <= len1; i ++) {
+            foo[i+1][1] = i;
+            foo[i+1][0] = combined;
         }
-        for (j = 0; j < len2; j ++) {
-            foo[0][j] = j;
+        for (j = 0; j <= len2; j ++) {
+            foo[1][j+1] = j;
+            foo[0][j+1] = combined;
         }
         
-        for (i = 1; i < len1; i ++) {
-            int char1 = a.charAt(i - 1);
+        int[] DA = new int[alphabetlength];
+        Arrays.fill(DA, 0);
+        
+        for(i = 1; i<=a.length(); i++) {
+            int DB = 0;
             
-            for (j = 1; j < len2; j ++) {
-                int char2 = b.charAt(j - 1);
+            for(j = 1; j<=b.length(); j++) {
                 
-                if (char1 == char2) {
-                    cost = 0;
-                } else {
-                    cost = 1;
+                int i1 = DA[b.charAt(j-1)];
+                int j1 = DB;
+                int d = (a.charAt(i-1)==b.charAt(j-1))? 0:1;
+                
+                if (d==0) { 
+                    DB = j;
                 }
                 
-                //deletion
-                int w = foo[i-1][j] + 1;
-                //insertion
-                int x = foo[i][j-1] + 1;
-                //substitution
-                int y = foo[i-1][j-1] + cost;
-                
-                foo[i][j] = min(w, min(x,y));
-                
-                if (i > 1 && j > 1 && char1 == b.charAt(j-2) && a.charAt(i-2) == char2) {
-                    int z = foo[i-2][j-2] + cost;
-                    foo[i][j] = min(foo[i][j], z);
-                }
+                foo[i+1][j+1] =
+                  min(min(min(foo[i][j]+d,
+                      foo[i+1][j] + 1),
+                      foo[i][j+1]+1), 
+                      foo[i1][j1] + (i-i1-1) + 1 + (j-j1-1));
+              }
+              DA[a.charAt(i-1)] = i;
             }
-        }
-        
-        return foo[len1][len2];
-    }
+            return foo[a.length()+1][b.length()+1];
+          }
     
 }
