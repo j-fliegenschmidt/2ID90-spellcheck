@@ -48,7 +48,7 @@ public class SpellCorrector {
                 .filter(entry -> damerauLevenshtein(entry, word) == 1);
     }
     
-    private static int damerauLevenshtein(String a, String b) {
+    public static int damerauLevenshtein(String a, String b) {
         
         int foo[][];
         int cost;
