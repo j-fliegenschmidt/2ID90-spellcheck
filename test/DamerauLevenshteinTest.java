@@ -123,4 +123,10 @@ public class DamerauLevenshteinTest {
 //        checkGetChange("hello", "helllo", "del");
 //    }
     
+    
+    //Test case that broke the program
+    @Test
+    public void testProblemCandidates() {
+        checkExecuteDHS("hme", "seriousandwidespreadweaknessespersistat", 38);
+    }
 }

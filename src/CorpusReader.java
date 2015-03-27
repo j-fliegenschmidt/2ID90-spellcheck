@@ -140,7 +140,8 @@ public class CorpusReader {
         
         public FrequencyTable() {
             this.frequencies = new HashMap<>();
-            this.highestFrequency = this.lowestFrequency = -1;
+            this.highestFrequency = Integer.MIN_VALUE;
+            this.lowestFrequency = Integer.MAX_VALUE;
         }
         
         public void incrementOccurence(int frequency) {
