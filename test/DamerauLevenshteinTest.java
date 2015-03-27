@@ -77,4 +77,10 @@ public class DamerauLevenshteinTest {
     public void testExecuteDHS7() {
         checkExecuteDHS("word", "bahhhhhhhhh", 10);
     }
+    
+    //Test case that broke the program
+    @Test
+    public void testProblemCandidates() {
+        checkExecuteDHS("hme", "seriousandwidespreadweaknessespersistat", 38);
+    }
 }
