@@ -13,7 +13,7 @@ public class DamerauLevenshtein {
     private String wordTwo;
     private int[][] foobar;
     private int alphabet;
-    private String change;
+    private int change;
  
     public DamerauLevenshtein(String a, String b)
     {
@@ -29,16 +29,14 @@ public class DamerauLevenshtein {
         }
         //The number of letters in the alphabet including apostrophes
         alphabet = 27;
-        change = "";
     }
     
-    public String getChange() {
+    public int getChange() {
         return change;
     } 
     
     public int executeDHS() {
         
-        //int res = -1;
         int INF = wordOne.length() + wordOne.length();
  
         foobar = new int[wordOne.length()+1][wordOne.length()+1];
@@ -88,25 +86,23 @@ public class DamerauLevenshtein {
 
                 foobar[i+1][j+1] = Math.min(sub, Math.min(del, Math.min(ins, trans)));
                 
-                if (foobar[i+1][j+1] == 1) {
-                    if (sub == 1) {
-                        change = "sub";
-                    } else if (del == 1) {
-                        change = "del";
-                    } else if (ins == 1) {
-                        change = "ins";
-                    } else if (trans == 1) {
-                        change = "trans";
-                    }
-                }
-                
-                System.out.println(change);
-                
             }
-            helper[wordOne.indexOf(wordOne.charAt(i-1))] = i;
+            //helper[wordOne.indexOf(wordOne.charAt(i-1))] = i;
         }
         
-         
-        return foobar[wordOne.length()][wordTwo.length()];
+        change = foobar[wordOne.length()][wordTwo.length()];
+        return change;
     }
+    
+//    public String getMethod() throws IllegalStateException {
+//        if (change > 1) {
+//            throw new IllegalStateException("The DamerauLevenschtein score is not 1");
+//        } else if (change < 1) {
+//            throw new IllegalStateException("DamerauLevenschtein has not be executed yet");
+//    }
+//        
+//        if (change == 1) {
+//            for (int i = 0; )
+//        }
+//    }
 }

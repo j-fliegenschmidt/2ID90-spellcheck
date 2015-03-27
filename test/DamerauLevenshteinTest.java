@@ -79,51 +79,6 @@ public class DamerauLevenshteinTest {
         checkExecuteDHS("word", "bahhhhhhhhh", 10);
     }
 
-//    /**
-//     * Test of getChange method, of class DamerauLevenshtein.
-//     */
-//    public void checkGetChange(String a, String b, String expResult) {
-//        System.out.println("getChange");
-//        DamerauLevenshtein instance;
-//        instance = new DamerauLevenshtein(a,b);
-//        instance.executeDHS();
-//        String result = instance.getChange();
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//    
-//    //Testing for insertion
-//    @Test
-//    public void testGetChange0() {
-//        checkGetChange("hello", "hell", "ins");
-//    }
-//    
-//    //Testing for same
-//    @Test
-//    public void testGetChange1() {
-//        checkGetChange("hello", "hello", "");
-//    }
-//    
-//    //Testing for swap
-//    @Test
-//    public void testGetChange2() {
-//        checkGetChange("helol", "hello", "trans");
-//    }
-//    
-//    //Testing for substitution
-//    @Test
-//    public void testGetChange3() {
-//        checkGetChange("hello", "hekko", "sub");
-//    }
-//    
-//    //Testing for deletion
-//    @Test
-//    public void testGetChange4() {
-//        checkGetChange("hello", "helllo", "del");
-//    }
-    
-    
     //Test case that broke the program
     @Test
     public void testProblemCandidates() {
