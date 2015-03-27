@@ -23,13 +23,15 @@ public class SpellCorrector {
         String[] words = phrase.split(" ");
         String finalSuggestion = "";
 
+        String lastWord = "";
         for (String word : words) {
             if (this.cr.inVocabulary(word)) {
                 finalSuggestion += word + " ";
             } else {
+                String _lastWord = lastWord;
                 HashMap<String, Double> candidates = new HashMap<>();
                 this.getCandidateWords(word).forEach(candidate
-                        -> candidates.put(candidate, calculateChannelModelProbability(candidate, word)));
+                        -> candidates.put(candidate, calculateChannelModelProbability(candidate, word, _lastWord)));
 
                 double prob = 0;
                 String corrWord = "<empty>";
@@ -42,16 +44,19 @@ public class SpellCorrector {
 
                 finalSuggestion += corrWord + " ";
             }
+            
+            lastWord = word;
         }
 
         return finalSuggestion.trim();
     }
 
-    public double calculateChannelModelProbability(String suggested, String incorrect) {
+    public double calculateChannelModelProbability(String suggested, String incorrect, String preceding) {
         double result = this.cr.getSmoothedCount(suggested);
 
-        String missspelling = SpellCorrector.findSpellingError(suggested, incorrect);
-
+        //String[] spellingError = SpellCorrector.findSpellingError(suggested, incorrect).split("|");
+        //result *= this.cmr.getConfusionCount(spellingError[0], spellingError[1]);
+        
         return result;
     }
 
@@ -64,6 +69,17 @@ public class SpellCorrector {
     }
     
     private static String findSpellingError(String correct, String incorrect) {
-        return "";
+        String result = "";
+        int lengthDiff = correct.length() - incorrect.length();
+        lengthDiff = lengthDiff < 0 ? -1 * lengthDiff : lengthDiff;
+        
+        if (lengthDiff < 2) {
+            
+        }
+        else {
+            
+        }
+        
+        return result;
     }
 }
