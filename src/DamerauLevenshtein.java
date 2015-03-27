@@ -13,6 +13,7 @@ public class DamerauLevenshtein {
     private String wordTwo;
     private int[][] foobar;
     private int alphabet;
+    private String change;
  
     public DamerauLevenshtein(String a, String b)
     {
@@ -28,7 +29,12 @@ public class DamerauLevenshtein {
         }
         //The number of letters in the alphabet including apostrophes
         alphabet = 27;
+        change = "";
     }
+    
+    public String getChange() {
+        return change;
+    } 
     
     public int executeDHS() {
         
@@ -74,13 +80,32 @@ public class DamerauLevenshtein {
                 if (d == 0) {
                     db = j;
                 }
- 
-                foobar[i+1][j+1] = Math.min(
-                        Math.min(foobar[i][j]+d, foobar[i+1][j]+1),
-                        Math.min(foobar[i][j+1]+1,foobar[i1][j1]+(i - i1-1)+1+(j-j1-1)));
+                
+                int sub = foobar[i][j]+d;
+                int del = foobar[i][j+1]+1;
+                int ins = foobar[i+1][j]+1;
+                int trans = foobar[i1][j1]+(i - i1-1)+1+(j-j1-1);
+
+                foobar[i+1][j+1] = Math.min(sub, Math.min(del, Math.min(ins, trans)));
+                
+                if (foobar[i+1][j+1] == 1) {
+                    if (sub == 1) {
+                        change = "sub";
+                    } else if (del == 1) {
+                        change = "del";
+                    } else if (ins == 1) {
+                        change = "ins";
+                    } else if (trans == 1) {
+                        change = "trans";
+                    }
+                }
+                
+                System.out.println(change);
+                
             }
             helper[wordOne.indexOf(wordOne.charAt(i-1))] = i;
         }
+        
          
         return foobar[wordOne.length()][wordTwo.length()];
     }
