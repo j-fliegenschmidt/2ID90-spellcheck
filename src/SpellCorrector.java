@@ -31,6 +31,17 @@ public class SpellCorrector {
                 HashMap<String, Double> candidates = new HashMap<>();
                 this.getCandidateWords(word).forEach(candidate -> 
                         candidates.put(candidate, calculateChannelModelProbability(candidate, word)));
+                
+                double prob = 0;
+                String corrWord = "<empty>";
+                for (Map.Entry<String, Double> entry : candidates.entrySet()) {
+                    if (entry.getValue() > prob) {
+                        prob = entry.getValue();
+                        corrWord = entry.getKey();
+                    }
+                }
+                
+                finalSuggestion += corrWord + " ";
             }
         }
 
@@ -38,11 +49,11 @@ public class SpellCorrector {
     }
 
     public double calculateChannelModelProbability(String suggested, String incorrect) {
-        /**
-         * CODE TO BE ADDED *
-         */
-
-        return 0.0;
+        double result = this.cr.getSmoothedCount(suggested);
+        
+        String missspelling = this.findSpellingError(suggested, incorrect);
+        
+        return result;
     }
 
     //Janis, I'm not sure how to implement it if DamerauLevenshtein is in different class
