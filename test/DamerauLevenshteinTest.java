@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
  * @author alexau
  */
 public class DamerauLevenshteinTest {
+
     
     /**
      * Test of getDHSimilarity method, of class DamerauLevenshtein.
@@ -77,7 +78,7 @@ public class DamerauLevenshteinTest {
     public void testExecuteDHS7() {
         checkExecuteDHS("word", "bahhhhhhhhh", 10);
     }
-    
+
     //Test case that broke the program
     @Test
     public void testProblemCandidates() {

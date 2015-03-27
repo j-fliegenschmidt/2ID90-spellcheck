@@ -13,6 +13,7 @@ public class DamerauLevenshtein {
     private String wordTwo;
     private int[][] foobar;
     private int alphabet;
+    private int change;
  
     public DamerauLevenshtein(String a, String b)
     {
@@ -30,9 +31,12 @@ public class DamerauLevenshtein {
         alphabet = 27;
     }
     
+    public int getChange() {
+        return change;
+    } 
+    
     public int executeDHS() {
         
-        //int res = -1;
         int INF = wordOne.length() + wordOne.length();
  
         foobar = new int[wordOne.length()+1][wordOne.length()+1];
@@ -74,14 +78,31 @@ public class DamerauLevenshtein {
                 if (d == 0) {
                     db = j;
                 }
- 
-                foobar[i+1][j+1] = Math.min(
-                        Math.min(foobar[i][j]+d, foobar[i+1][j]+1),
-                        Math.min(foobar[i][j+1]+1,foobar[i1][j1]+(i - i1-1)+1+(j-j1-1)));
+                
+                int sub = foobar[i][j]+d;
+                int del = foobar[i][j+1]+1;
+                int ins = foobar[i+1][j]+1;
+                int trans = foobar[i1][j1]+(i - i1-1)+1+(j-j1-1);
+
+                foobar[i+1][j+1] = Math.min(sub, Math.min(del, Math.min(ins, trans)));
+                
             }
-            helper[wordOne.indexOf(wordOne.charAt(i-1))] = i;
+            //helper[wordOne.indexOf(wordOne.charAt(i-1))] = i;
         }
-         
-        return foobar[wordOne.length()][wordTwo.length()];
+        
+        change = foobar[wordOne.length()][wordTwo.length()];
+        return change;
     }
+    
+//    public String getMethod() throws IllegalStateException {
+//        if (change > 1) {
+//            throw new IllegalStateException("The DamerauLevenschtein score is not 1");
+//        } else if (change < 1) {
+//            throw new IllegalStateException("DamerauLevenschtein has not be executed yet");
+//    }
+//        
+//        if (change == 1) {
+//            for (int i = 0; )
+//        }
+//    }
 }
