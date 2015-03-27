@@ -44,7 +44,7 @@ public class SpellCorrector {
 
                 finalSuggestion += corrWord + " ";
             }
-            
+
             lastWord = word;
         }
 
@@ -54,8 +54,8 @@ public class SpellCorrector {
     public double calculateChannelModelProbability(String suggested, String incorrect, String preceding) {
         double result = this.cr.getSmoothedCount(suggested);
 
-        //String[] spellingError = SpellCorrector.findSpellingError(suggested, incorrect).split("|");
-        //result *= this.cmr.getConfusionCount(spellingError[0], spellingError[1]);
+        String[] spellingError = SpellCorrector.findSpellingError(suggested, incorrect);
+        result *= this.cmr.getConfusionCount(spellingError[0], spellingError[1]);
         
         return result;
     }
@@ -63,23 +63,73 @@ public class SpellCorrector {
     public Stream<String> getCandidateWords(String word) {
         return this.cr.getVocabularyStream()
                 .filter(entry -> {
-                    DamerauLevenshtein dlInstance = new DamerauLevenshtein(entry, word);                    
+                    DamerauLevenshtein dlInstance = new DamerauLevenshtein(entry, word);
                     return dlInstance.executeDHS() == 1;
                 });
     }
-    
-    private static String findSpellingError(String correct, String incorrect) {
-        String result = "";
+
+    /**
+     * Edit distance 1 only.
+     *
+     * @param correct
+     * @param incorrect
+     * @return { correct, misspelling }
+     */
+    private static String[] findSpellingError(String correct, String incorrect) {
+        String result[] = {"", ""};
         int lengthDiff = correct.length() - incorrect.length();
-        lengthDiff = lengthDiff < 0 ? -1 * lengthDiff : lengthDiff;
-        
-        if (lengthDiff < 2) {
-            
+
+        switch (lengthDiff) {
+            case 0: // transposition
+                for (int i = 0; i < correct.length(); i++) {
+                    if (correct.charAt(i) != incorrect.charAt(i)) {
+                        result[0] = String.valueOf(correct.charAt(i));
+                        result[1] = String.valueOf(incorrect.charAt(i));
+                        break;
+                    }
+                }
+
+                break;
+
+            case 1: // deletion
+                for (int i = 0; i < incorrect.length(); i++) {
+                    if (incorrect.charAt(i) != correct.charAt(i)) {
+                        if (i == 0) {
+                            result[0] = correct.substring(0, 2);
+                            result[1] = String.valueOf(incorrect.charAt(0));
+                        } else {
+                            result[0] = correct.substring(i - 1, i + 1);
+                            result[1] = String.valueOf(incorrect.charAt(i));
+                        }
+                        
+                        break;
+                    }
+                }
+
+                break;
+
+            case -1: // insertion
+                for (int i = 0; i < correct.length(); i++) {
+                    if (correct.charAt(i) != incorrect.charAt(i)) {
+                        if (i == 0) {
+                            result[0] = "";
+                            result[1] = String.valueOf(incorrect.charAt(0));
+                        } else {
+                            result[0] = String.valueOf(correct.charAt(i));
+                            result[1] = incorrect.substring(i, i + 2);
+                        }
+                        
+                        break;
+                    }
+                }
+                
+                break;
+
+            default:
+                // Not needed, not implemented.
+                break;
         }
-        else {
-            
-        }
-        
+
         return result;
     }
 }
