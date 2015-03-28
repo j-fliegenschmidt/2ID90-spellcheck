@@ -75,7 +75,7 @@ public class SpellCorrector {
      * @param incorrect
      * @return { correct, misspelling }
      */
-    private static String[] findSpellingError(String correct, String incorrect) {
+    public static String[] findSpellingError(String correct, String incorrect) {
         String result[] = {"", ""};
         int lengthDiff = correct.length() - incorrect.length();
 
