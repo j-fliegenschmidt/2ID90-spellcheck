@@ -90,4 +90,8 @@ public class DamerauLevenshtein2Test {
         checkExecute("xyz", "bc", 3);
     }
     
+    @Test
+    public void testPotentialFail3() {
+        checkExecute("hoome", "home", 1);
+    }
 }

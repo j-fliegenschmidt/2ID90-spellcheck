@@ -99,7 +99,7 @@ public class SpellCorrector {
                             result[1] = String.valueOf(incorrect.charAt(0));
                         } else {
                             result[0] = correct.substring(i - 1, i + 1);
-                            result[1] = String.valueOf(incorrect.charAt(i));
+                            result[1] = String.valueOf(incorrect.charAt(i - 1));
                         }
                         
                         break;
@@ -115,8 +115,8 @@ public class SpellCorrector {
                             result[0] = "";
                             result[1] = String.valueOf(incorrect.charAt(0));
                         } else {
-                            result[0] = String.valueOf(correct.charAt(i));
-                            result[1] = incorrect.substring(i, i + 2);
+                            result[0] = String.valueOf(correct.charAt(i - 1));
+                            result[1] = incorrect.substring(i - 1, i + 1);
                         }
                         
                         break;

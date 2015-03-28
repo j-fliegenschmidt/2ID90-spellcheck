@@ -15,16 +15,16 @@ public class FindSpellingErrorTest {
     
     @Test
     public void deletionTest() {
-        execFSE("hme", "home", "h|ho");
+        execFSE("home", "hme", "ho|h");
     }
     
     @Test
     public void insertionTest() {
-        execFSE("houme", "home", "ou|o");
+        execFSE("home", "houme", "o|ou");
     }
     
     @Test
     public void transpositionTest() {
-        execFSE("hone", "home", "n|m");
+        execFSE("home", "hone", "m|n");
     }
 }
