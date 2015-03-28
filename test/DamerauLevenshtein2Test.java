@@ -15,18 +15,13 @@ import static org.junit.Assert.*;
  *
  * @author alexau
  */
-public class DamerauLevenshteinTest {
-
+public class DamerauLevenshtein2Test {
     
-    /**
-     * Test of getDHSimilarity method, of class DamerauLevenshtein.
-     */
-    
-    private void checkExecuteDHS(String a, String b, int expResult) {
-        System.out.println("executeDHS");
-        DamerauLevenshtein instance;
-        instance = new DamerauLevenshtein(a,b);
-        int result = instance.executeDHS();
+    private void checkExecute(String a, String b, int expResult) {
+        System.out.println("Execute similarity testing");
+        DamerauLevenshtein2 instance;
+        instance = new DamerauLevenshtein2(a,b);
+        int result = instance.execute();
         assertEquals("The result " + result + " is equal to " + expResult, 
                 expResult, result);
     }
@@ -34,54 +29,65 @@ public class DamerauLevenshteinTest {
     //Testing for insertion
     @Test
     public void testExecuteDHS0() {
-        checkExecuteDHS("hello", "hell", 1);
+        checkExecute("hello", "hell", 1);
     }
     
     //Testing for same
     @Test
     public void testExecuteDHS1() {
-        checkExecuteDHS("hello", "hello", 0);
+        checkExecute("hello", "hello", 0);
     }
     
     //Testing for swap
     @Test
     public void testExecuteDHS2() {
-        checkExecuteDHS("helol", "hello", 1);
+        checkExecute("helol", "hello", 1);
     }
     
     //Testing for substitution
     @Test
     public void testExecuteDHS3() {
-        checkExecuteDHS("hello", "hekko", 2);
+        checkExecute("hello", "hekko", 2);
     }
     
     //Testing for deletion
     @Test
     public void testExecuteDHS4() {
-        checkExecuteDHS("hello", "helllo", 1);
+        checkExecute("hello", "helllo", 1);
     }
     
     //Testing for all incorrect
     @Test
     public void testExecuteDHS5() {
-        checkExecuteDHS("xyz", "bc", 2);
+        checkExecute("xyz", "bc", 3);
     }
     
     //Testing for different sized words
     @Test
     public void testExecuteDHS6() {
-        checkExecuteDHS("bahhhhhhhhh", "whered", 9);
+        checkExecute("bahhhhhhhhh", "whered", 10);
     }
     
     //Testing for different sized words
     @Test
     public void testExecuteDHS7() {
-        checkExecuteDHS("word", "bahhhhhhhhh", 10);
+        checkExecute("word", "bahhhhhhhhh", 11);
     }
 
     //Test case that broke the program
     @Test
     public void testProblemCandidates() {
-        checkExecuteDHS("hme", "seriousandwidespreadweaknessespersistat", 38);
+        checkExecute("hme", "seriousandwidespreadweaknessespersistat", 38);
     }
+    
+    @Test
+    public void testProblemFail() {
+        checkExecute("hme", "has", 2);
+    }
+    
+    @Test
+    public void testProblemFail2() {
+        checkExecute("xyz", "bc", 3);
+    }
+    
 }

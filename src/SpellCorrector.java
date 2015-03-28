@@ -63,8 +63,8 @@ public class SpellCorrector {
     public Stream<String> getCandidateWords(String word) {
         return this.cr.getVocabularyStream()
                 .filter(entry -> {
-                    DamerauLevenshtein dlInstance = new DamerauLevenshtein(entry, word);
-                    return dlInstance.executeDHS() == 1;
+                    DamerauLevenshtein2 dlInstance = new DamerauLevenshtein2(entry, word);
+                    return dlInstance.execute() == 1;
                 });
     }
 
