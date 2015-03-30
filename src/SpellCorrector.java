@@ -53,9 +53,10 @@ public class SpellCorrector {
 
     public double calculateChannelModelProbability(String suggested, String incorrect, String preceding) {
         double result = this.cr.getSmoothedCount(suggested);
+        result *= this.cr.getSmoothedCount(preceding + " " + suggested);
 
         String[] spellingError = SpellCorrector.findSpellingError(suggested, incorrect);
-        result *= this.cmr.getConfusionCount(spellingError[0], spellingError[1]);
+        result *= (this.cmr.getConfusionCount(spellingError[0], spellingError[1]) + 1);
         
         return result;
     }
