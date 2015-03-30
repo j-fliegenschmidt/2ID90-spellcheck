@@ -33,7 +33,7 @@ public class SpellCorrector {
                 this.getCandidateWords(word).forEach(candidate
                         -> candidates.put(candidate, calculateChannelModelProbability(candidate, word, _lastWord)));
 
-                double prob = 0;
+                double prob = Integer.MIN_VALUE;
                 String corrWord = "<empty>";
                 for (Map.Entry<String, Double> entry : candidates.entrySet()) {
                     if (entry.getValue() > prob) {
