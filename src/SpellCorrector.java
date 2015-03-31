@@ -87,7 +87,7 @@ public class SpellCorrector {
         int lengthDiff = correct.length() - incorrect.length();
 
         switch (lengthDiff) {
-            case 0: // transposition
+            case 0: // substitution
                 for (int i = 0; i < correct.length(); i++) {
                     if (correct.charAt(i) != incorrect.charAt(i)) {
                         result[0] = String.valueOf(correct.charAt(i));
