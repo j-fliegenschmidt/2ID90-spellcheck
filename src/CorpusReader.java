@@ -100,6 +100,12 @@ public class CorpusReader {
         return vocabulary.contains(word);
     }
 
+    /**
+     * Implements Good-Turing smoothing for the NGram count.
+     * 
+     * @param NGram
+     * @return smoothedCount
+     */
     public double getSmoothedCount(String NGram) {
         if (NGram == null || NGram.length() == 0) {
             throw new IllegalArgumentException("NGram must be non-empty.");
@@ -107,31 +113,35 @@ public class CorpusReader {
 
         double smoothedCount = 0.0;
         int totalPossibilities = 0;
-        FrequencyTable frequencyTyble = new FrequencyTable();
+        FrequencyTable frequencyTable = new FrequencyTable();
         String nGramProposition = NGram.substring(0, NGram.lastIndexOf(" ") + 1);
 
         for (String word : this.vocabulary) {
             int wordFrequency = this.getNGramCount(nGramProposition + word);
             totalPossibilities += wordFrequency;
 
-            frequencyTyble.incrementOccurence(wordFrequency);
+            frequencyTable.incrementOccurence(wordFrequency);
         }
 
         int NGramCount = this.getNGramCount(NGram);
         if (NGramCount == 0) {
-            smoothedCount = frequencyTyble.getInterpolatedFrequency(1) / totalPossibilities;
+            smoothedCount = frequencyTable.getInterpolatedFrequency(1) / totalPossibilities;
         } else {
-            smoothedCount = ((NGramCount + 1) * frequencyTyble.getInterpolatedFrequency(NGramCount + 1))
-                    / frequencyTyble.getInterpolatedFrequency(NGramCount);
+            smoothedCount = ((NGramCount + 1) * frequencyTable.getInterpolatedFrequency(NGramCount + 1))
+                    / frequencyTable.getInterpolatedFrequency(NGramCount);
         }
 
         return smoothedCount;
     }
 
     public Stream<String> getVocabularyStream() {
+        // Streams are a cool choice for readonly-interfaces
         return this.vocabulary.stream();
     }
     
+    /**
+     * A helper class dedicated to implementing Good-Turing smoothing.
+     */
     private class FrequencyTable {
         
         private int lowestFrequency;
@@ -162,18 +172,18 @@ public class CorpusReader {
         
         public double getInterpolatedFrequency(int frequency) {
             int frequencyFrequency = this.getRawFrequency(frequency);
-            if (frequencyFrequency == 0) {
-                if (frequency > this.highestFrequency) {
+            if (frequencyFrequency == 0) { // If it has a value, no need to interpolate
+                if (frequency > this.highestFrequency) { // exponential decline after highest observed frequency
                     for (int i = this.highestFrequency; i < frequency; i++) {
                         frequencyFrequency *= 0.66;
                     }
                 }
-                else if (frequency < this.lowestFrequency) {
+                else if (frequency < this.lowestFrequency) { // exponential decline before lowest observed frequency
                     for (int i = frequency; i < this.lowestFrequency; i++) {
                         frequencyFrequency *= 1.5;
                     }
                 }
-                else {
+                else { // linear interpolation between highest and lowest observed frequency
                     int y_diff = this.frequencies.get(this.highestFrequency) 
                             - this.frequencies.get(this.lowestFrequency);
                     int x_diff = this.frequencies.get(this.highestFrequency)

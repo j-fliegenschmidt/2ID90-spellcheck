@@ -23,11 +23,12 @@ public class SpellCorrector {
         String[] words = phrase.split(" ");
         String finalSuggestion = "";
 
+        // Fix spelling errors:
         String lastWord = "";
         for (String word : words) {
-            if (this.cr.inVocabulary(word)) {
+            if (this.cr.inVocabulary(word)) { // in vocabulary => valid word      
                 finalSuggestion += word + " ";
-            } else {
+            } else { // not in vocabulary => misspelled
                 String _lastWord = lastWord;
                 HashMap<String, Double> candidates = new HashMap<>();
                 this.getCandidateWords(word).forEach(candidate
@@ -52,9 +53,14 @@ public class SpellCorrector {
     }
 
     public double calculateChannelModelProbability(String suggested, String incorrect, String preceding) {
+        // Influence 1: Is the suggestion a common word?
         double result = this.cr.getSmoothedCount(suggested);
-        result *= this.cr.getSmoothedCount(preceding + " " + suggested);
+        
+        // Influence 2: Is the suggested word commonly following the last word?
+        // Rated higher since context is most important
+        result += 10 * this.cr.getSmoothedCount(preceding + " " + suggested);
 
+        // Influence 3: Is it plausible to assume the spelling error happened?
         String[] spellingError = SpellCorrector.findSpellingError(suggested, incorrect);
         result *= (this.cmr.getConfusionCount(spellingError[0], spellingError[1]) + 1);
         
