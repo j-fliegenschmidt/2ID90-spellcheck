@@ -8,7 +8,7 @@ public class SpellChecker {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        boolean inPeach = false; // set this to true if you submit to peach!!!
+        boolean inPeach = true; // set this to true if you submit to peach!!!
 
         try {
             CorpusReader cr = new CorpusReader();
